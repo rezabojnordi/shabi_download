@@ -44,6 +44,28 @@ python3 shabi_download_manager.py 1 --urls https://example.com/file.zip --direct
 python3 shabi_download_manager.py 2 --urls https://example.com/file1.zip https://example.com/file2.zip --threads 8 --directory downloads
 ```
 
+#### binary file
+```bash
+cp shabi_download /usr/bin/
+
+shabi_download  -h
+usage: shabi_download [-h] [--urls URLS [URLS ...]] [--threads THREADS] [--directory DIRECTORY] mode
+
+Shabi Download manager.
+
+positional arguments:
+  mode                  1 for single link, 2 for multiple links
+
+options:
+  -h, --help            show this help message and exit
+  --urls URLS [URLS ...]
+                        URL(s) to download
+  --threads THREADS     Number of concurrent threads
+  --directory DIRECTORY
+                        Directory to save downloaded files
+
+
+```
 Arguments:
 
 * mode: Specify 1 for single link or 2 for multiple links.
