@@ -49,7 +49,8 @@ python3 shabi_download_manager.py 2 --urls https://example.com/file1.zip https:/
 cp shabi_download /usr/bin/
 
 shabi_download  -h
-usage: shabi_download [-h] [--urls URLS [URLS ...]] [--threads THREADS] [--directory DIRECTORY] mode
+shabi_download -h
+usage: shabi_download [-h] [--urls URLS [URLS ...]] [--threads THREADS] [--directory DIRECTORY] [--resume] mode
 
 Shabi Download manager.
 
@@ -63,6 +64,7 @@ options:
   --threads THREADS     Number of concurrent threads
   --directory DIRECTORY
                         Directory to save downloaded files
+  --resume              Resume the download if interrupted
 
 
 ```
