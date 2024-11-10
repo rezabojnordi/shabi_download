@@ -76,7 +76,8 @@ Arguments:
 
 * --threads: (Optional) Set the number of concurrent threads for multiple downloads (default is 4).
 
-* --directory: (Optional) Directory to save downloaded files (default is downloads).
+* --directory: (Optional) Directory to save downloaded files (default downloads).
+* --resume              Resume the download if interrupted
 
 Feel free to use and modify it for your personal needs. If you have any questions or need further customization, let me know!
 
