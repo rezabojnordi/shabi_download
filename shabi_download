@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 import os
-import threading
 import requests
 import argparse
 import time
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
-from urllib.parse import quote, urlparse, parse_qs
+from urllib.parse import quote, urlparse
 
 
 def clean_filename(url):
@@ -22,7 +21,6 @@ def download_file(url, directory, progress_bar, resume=False, max_retries=3):
     }
     downloaded_size = 0
     
-    # Check if part of the file already exists to resume download
     if resume and os.path.exists(local_filename):
         downloaded_size = os.path.getsize(local_filename)
         headers['Range'] = f'bytes={downloaded_size}-'
@@ -38,18 +36,17 @@ def download_file(url, directory, progress_bar, resume=False, max_retries=3):
 
                 with open(local_filename, 'ab') as f:
                     for chunk in response.iter_content(chunk_size=8192):
-                        if chunk:  # filter out keep-alive chunks
+                        if chunk:
                             f.write(chunk)
                             downloaded_size += len(chunk)
                             progress_bar.update(len(chunk))
-                            print(f"Downloaded: {downloaded_size / (1024 * 1024):.2f} MB of {total_size / (1024 * 1024):.2f} MB", end='\r')
                             progress_bar.set_postfix({"Downloaded": f"{downloaded_size / (1024 * 1024):.2f} MB / {total_size / (1024 * 1024):.2f} MB"})
                 print(f"\nDownload completed: {local_filename}")
                 return
         except requests.exceptions.RequestException as e:
             print(f"Error downloading {url} (attempt {attempt + 1} of {max_retries}): {e}")
             if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)  # Exponential backoff
+                time.sleep(2 ** attempt)
             else:
                 print(f"Failed to download {url} after {max_retries} attempts.")
 
@@ -84,16 +81,14 @@ def main():
     parser.add_argument('--directory', type=str, default='downloads', help="Directory to save downloaded files")
     parser.add_argument('--resume', action='store_true', help="Resume the download if interrupted")
 
-    args, unknown = parser.parse_known_args()
-    if '--resume' in unknown:
-        args.resume = True
+    args = parser.parse_args()
 
     # Create download directory if not exists
     if not os.path.exists(args.directory):
         os.makedirs(args.directory)
 
     if args.mode == 1:
-        if len(args.urls) != 1:
+        if not args.urls or len(args.urls) != 1:
             print("Error: Please provide exactly one URL for single link mode.")
             return
         print("Starting download of 1 file...")
@@ -101,12 +96,22 @@ def main():
         with tqdm(total=0, unit='B', unit_scale=True, desc=f"Downloading {clean_filename(args.urls[0])}") as progress_bar:
             download_file(encoded_url, args.directory, progress_bar, args.resume)
     elif args.mode == 2:
-        if len(args.urls) < 1:
-            print("Error: Please provide at least one URL for multiple link mode.")
+        if args.urls:
+            urls = args.urls
+        elif os.path.exists("link.txt"):
+            # Read URLs from link.txt if --urls is not provided
+            with open("link.txt", "r") as file:
+                urls = [line.strip() for line in file if line.strip()]
+            if not urls:
+                print("Error: link.txt is empty or contains invalid URLs.")
+                return
+        else:
+            print("Error: Please provide URLs with --urls or ensure link.txt exists with URLs.")
             return
-        download_files_concurrently(args.urls, args.directory, args.threads, args.resume)
+        download_files_concurrently(urls, args.directory, args.threads, args.resume)
     else:
         print("Error: Invalid mode. Use 1 for single link or 2 for multiple links.")
+
 
 
 if __name__ == '__main__':

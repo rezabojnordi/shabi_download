@@ -40,8 +40,10 @@ python3 shabi_download_manager.py 1 --urls https://example.com/file.zip --direct
 ```
 #### To download multiple files concurrently:
 
+* Note:
+ You can add your link on the link.txt after that this commandline read from the file
 ```bash
-python3 shabi_download_manager.py 2 --urls https://example.com/file1.zip https://example.com/file2.zip --threads 8 --directory downloads
+shabi_download 2 --threads 20 --directory downloads
 ```
 
 #### binary file
