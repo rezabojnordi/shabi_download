@@ -35,14 +35,19 @@ This script can be run from the terminal with different modes:
 
 #### To download a single file:
 
-```
-python3 shabi_download_manager.py 1 --urls https://example.com/file.zip --directory downloads
+```bash
+python3 shabi_download_manager.py 1 --urls https://example.com/file.zip --threads 20 --directory downloads
+or
+shabi_download 1 --urls 'https://dl3.linkro.info/Movies6/2024/The.Substance.2024/The.Substance.2024.1080p.WEB-DL.DD5.1.H.264.FLUX.ZarFilm.mkv?md5=u3O70cYVRfbpklais-gJYQ&u=820535&expires=1731421607' --threads 20 --directory downloads
+
 ```
 #### To download multiple files concurrently:
 
 * Note:
  You can add your link on the link.txt after that this commandline read from the file
 ```bash
+python3 shabi_download_manager.py 2  --threads 20 --directory downloads
+or
 shabi_download 2 --threads 20 --directory downloads
 ```
 
